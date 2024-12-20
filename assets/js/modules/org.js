@@ -519,8 +519,11 @@ function load_states() {
 function handleStates() {
 	// States
 	$(document).on('click', '.add-tax-grid-row', function(e) {
-	    let prevRow = $(e.target).siblings(".row.tax-grid-row").last();;
-	    // console.log(prevRow)
+	    let prevRow = $(e.target).siblings(".row.tax-grid-row").last();
+	    if(prevRow.length == 0) {
+	    	prevRow = $(e.target).siblings(".tax-gridRows").find('.row.tax-grid-row').last();
+	    }
+	    console.log($(e.target).siblings(".row.tax-grid-row"))
 
 	    // return false;
 	    let newRow = `<div class="row tax-grid-row" style="margin-top: 5px;">

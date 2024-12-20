@@ -83,7 +83,7 @@ function formatDateRange(startDate, endDate) {
         return `${startFormattedWithYear} - ${endFormatted}`;
     }
 }
-function formatDate(dateString, format = 'month_name') {
+function formatDate(dateString, format = 'month_name', incDay = true) {
   const date = new Date(dateString);
 
   if (isNaN(date.getTime())) {
@@ -108,6 +108,7 @@ function formatDate(dateString, format = 'month_name') {
     const year = date.getFullYear();
 
     let returnDate = `${day} ${months[date.getMonth()]}, ${year}`
+    if(!incDay) returnDate = `${months[date.getMonth()]}, ${year}`
     return returnDate;// months[date.getMonth()];   
 
   } else {

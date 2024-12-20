@@ -199,6 +199,13 @@ function settingsArray() {
             'details' => 'Time out', 
             'remarks' => 'required'
         ],
+        'overtime' => [
+            'type' => 'overtime',
+            'value' => 'Yes', 
+            'section' => 'payroll', 
+            'details' => 'Include Overtime in Payroll Calculations', 
+            'remarks' => 'required'
+        ],
 
     );
 
@@ -297,6 +304,294 @@ function select_active($table, $array = array('value' => 'id', 'text' => 'name')
 
     // Echo the generated options
     echo $options;
+}
+
+function calculateEmployeeEarnings($employeeId, $payrollMonth) {
+    $conn = $GLOBALS['conn'];
+
+    // Define earning types
+    $earningTypes = ['Commission', 'Bonus', 'Allowance'];
+    $earnings = array_fill_keys(array_map('strtolower', $earningTypes), 0);
+
+    // Query to fetch earnings for the given employee and payroll month
+    $query = "
+        SELECT `transaction_type`, SUM(`amount`) AS total
+        FROM `employee_transactions`
+        WHERE `emp_id` = '$employeeId'
+        AND `status` = 'Approved'
+        AND DATE_FORMAT(`date`, '%Y-%m') = '$payrollMonth'
+        AND `transaction_type` IN ('" . implode("', '", $earningTypes) . "')
+        GROUP BY `transaction_type`
+    ";
+
+    // echo $query;
+    $result = $conn->query($query);
+
+    // Process the results
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $type = strtolower($row['transaction_type']);
+            $earnings[$type] = (float)$row['total'];
+        }
+    }
+
+    return $earnings;
+}
+
+function calculateEmployeeDeductions($employeeId, $payrollMonth) {
+    $conn = $GLOBALS['conn'];
+
+    // Define deduction types
+    $deductionTypes = ['Loan', 'Advance', 'Deduction'];
+    $deductions = array_fill_keys(array_map('strtolower', $deductionTypes), 0);
+
+    // Query to fetch deductions for the given employee and payroll month
+    $query = "
+        SELECT `transaction_type`, SUM(`amount`) AS total
+        FROM `employee_transactions`
+        WHERE `emp_id` = '$employeeId'
+        AND `status` = 'Approved'
+        AND DATE_FORMAT(`date`, '%Y-%m') = '$payrollMonth'
+        AND `transaction_type` IN ('" . implode("', '", $deductionTypes) . "')
+        GROUP BY `transaction_type`
+    ";
+    $result = $conn->query($query);
+
+    // Process the results
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $type = strtolower($row['transaction_type']);
+            $deductions[$type] = (float)$row['total'];
+        }
+    }
+
+    return $deductions;
+}
+
+function calculateAttendanceStats($employeeId, $payrollMonth) {
+   $conn = $GLOBALS['conn'];
+
+    // Initialize counters
+    $stats = [
+        'present_days' => 0,
+        'paid_leave_days' => 0,
+        'sick_days' => 0,
+        'unpaid_leave_days' => 0,
+        'holidays' => 0,
+        'not_hired_days' => 0,
+        'no_show_days' => 0,
+        'total_days' => 0,
+    ];
+
+    // Query to fetch attendance details for the given employee and payroll month
+    $query = "
+        SELECT `status`, COUNT(*) AS count
+        FROM `atten_details`
+        WHERE `emp_id` = '$employeeId'
+        AND DATE_FORMAT(`atten_date`, '%Y-%m') = '$payrollMonth'
+        GROUP BY `status`
+    ";
+    $result = $conn->query($query);
+
+    // Process the results
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            switch ($row['status']) {
+                case 'P':
+                    $stats['present_days'] += (int)$row['count'];
+                    break;
+                case 'PL':
+                    $stats['paid_leave_days'] += (int)$row['count'];
+                    break;
+                case 'S':
+                    $stats['sick_days'] += (int)$row['count'];
+                    break;
+                case 'UL':
+                    $stats['unpaid_leave_days'] += (int)$row['count'];
+                    break;
+                case 'H':
+                    $stats['holidays'] += (int)$row['count'];
+                    break;
+                case 'NH':
+                    $stats['not_hired_days'] += (int)$row['count'];
+                    break;
+                case 'N':
+                    $stats['no_show_days'] += (int)$row['count'];
+                    break;
+            }
+        }
+    }
+
+    // Calculate total days in the month
+    $startDate = "$payrollMonth-01";
+    $totalDaysInMonth = date('t', strtotime($startDate));
+    $stats['total_days'] = $totalDaysInMonth;
+
+    return $stats;
+}
+
+/*function calculateTimeSheetHours($employeeId, $payrollMonth) {
+    $workHoursPerDay = return_setting('working_hours');
+    $conn = $GLOBALS['conn'];
+
+    // Initialize counters for overtime and undertime
+    $result = [
+        'overtime_hours' => 0,
+        'undertime_hours' => 0,
+        'total_worked_hours' => 0
+    ];
+
+    // Query to fetch timesheet details for the given employee and payroll month
+    $query = "
+        SELECT `ts_date`, `time_in`, `time_out`
+        FROM `timesheet_details`
+        WHERE `emp_id` = '$employeeId'
+        AND DATE_FORMAT(`ts_date`, '%Y-%m') = '$payrollMonth'
+        AND `status` = 'P' -- Consider only 'Present' days for working hours
+    ";
+    $resultSet = $conn->query($query);
+
+    if ($resultSet) {
+        while ($row = $resultSet->fetch_assoc()) {
+            $timeIn = $row['time_in'];
+            $timeOut = $row['time_out'];
+
+            // Skip if no valid time_in or time_out
+            if ($timeIn === '00:00:00' || $timeOut === '00:00:00') {
+                continue;
+            }
+
+            // Calculate worked hours for the day
+            $timeInObj = new DateTime($timeIn);
+            $timeOutObj = new DateTime($timeOut);
+            $workedHours = $timeOutObj->diff($timeInObj)->h + $timeOutObj->diff($timeInObj)->i / 60;
+
+            // Update total worked hours
+            $result['total_worked_hours'] += $workedHours;
+
+            // Determine overtime or undertime
+            if ($workedHours > $workHoursPerDay) {
+                $result['overtime_hours'] += $workedHours - $workHoursPerDay;
+            } elseif ($workedHours < $workHoursPerDay) {
+                $result['undertime_hours'] += $workHoursPerDay - $workedHours;
+            }
+        }
+    }
+
+    return $result;
+}*/
+
+function calculateTimeSheetHours($employeeId, $payrollMonth, $workHoursPerDay = 0) {
+    if($workHoursPerDay == 0) $workHoursPerDay = return_setting('working_hours');
+    $conn = $GLOBALS['conn'];
+
+    // Initialize counters
+    $result = [
+        'net_hours' => 0, // Positive for overtime, negative for undertime
+        'total_worked_hours' => 0
+    ];
+
+    // Query to fetch timesheet details for the given employee and payroll month
+    $query = "
+        SELECT `ts_date`, `time_in`, `time_out`
+        FROM `timesheet_details`
+        WHERE `emp_id` = '$employeeId'
+        AND DATE_FORMAT(`ts_date`, '%Y-%m') = '$payrollMonth'
+        AND `status` = 'P' -- Consider only 'Present' days for working hours
+    ";
+    $resultSet = $conn->query($query);
+
+    if ($resultSet) {
+        while ($row = $resultSet->fetch_assoc()) {
+            $timeIn = $row['time_in'];
+            $timeOut = $row['time_out'];
+
+            // Skip if no valid time_in or time_out
+            if ($timeIn === '00:00:00' || $timeOut === '00:00:00') {
+                continue;
+            }
+
+            // Calculate worked hours for the day
+            $timeInObj = new DateTime($timeIn);
+            $timeOutObj = new DateTime($timeOut);
+            $workedHours = $timeOutObj->diff($timeInObj)->h + $timeOutObj->diff($timeInObj)->i / 60;
+
+            // Update total worked hours
+            $result['total_worked_hours'] += $workedHours;
+
+            // Calculate net hours (positive for overtime, negative for undertime)
+            $result['net_hours'] += $workedHours - $workHoursPerDay;
+        }
+    }
+
+    return $result;
+}
+
+
+function getTaxRate(float $amount, int $stateId): float {
+    // Simulating a database fetch for the state record
+    $stateInfo = get_data('states', ['id' => $stateId]);
+    if($stateInfo) {
+        $stateInfo = $stateInfo[0];
+        // Return 0 if state not found or tax grid is empty
+        if (!$stateInfo || empty($stateInfo['tax_grid'])) {
+            return 0;
+        }
+
+        // Decode the tax grid JSON
+        $taxGrid = json_decode($stateInfo['tax_grid'], true);
+
+        // Return 0 if JSON decoding fails
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($taxGrid)) {
+            return 0;
+        }
+
+        // Calculate the applicable tax rate
+        foreach ($taxGrid as $taxBracket) {
+            $min = isset($taxBracket['min']) ? (float)$taxBracket['min'] : 0;
+            $max = isset($taxBracket['max']) ? (float)$taxBracket['max'] : PHP_FLOAT_MAX;
+            $rate = isset($taxBracket['rate']) ? (float)$taxBracket['rate'] : 0;
+
+            if ($amount >= $min && $amount <= $max) {
+                // Return the calculated tax amount
+                return $amount * ($rate / 100);
+            }
+        }
+    }
+    return 0;
+}
+
+function getTaxPercentage(float $amount, int $stateId): float {
+    // Simulating a database fetch for the state record
+    $stateInfo = get_data('states', ['id' => $stateId]);
+    if ($stateInfo) {
+        $stateInfo = $stateInfo[0];
+        // Return 0 if state not found or tax grid is empty
+        if (!$stateInfo || empty($stateInfo['tax_grid'])) {
+            return 0;
+        }
+
+        // Decode the tax grid JSON
+        $taxGrid = json_decode($stateInfo['tax_grid'], true);
+
+        // Return 0 if JSON decoding fails
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($taxGrid)) {
+            return 0;
+        }
+
+        // Determine the applicable tax rate
+        foreach ($taxGrid as $taxBracket) {
+            $min = isset($taxBracket['min']) ? (float)$taxBracket['min'] : 0;
+            $max = isset($taxBracket['max']) ? (float)$taxBracket['max'] : PHP_FLOAT_MAX;
+            $rate = isset($taxBracket['rate']) ? (float)$taxBracket['rate'] : 0;
+
+            if ($amount >= $min && $amount <= $max) {
+                // Return the applicable tax rate (percentage)
+                return $rate;
+            }
+        }
+    }
+    return 0;
 }
 
 

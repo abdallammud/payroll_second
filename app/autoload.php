@@ -183,7 +183,7 @@ function get_menu_config() {
             'icon' => 'calculate',
             'menu' => 'payroll',
             'route' => 'payroll',
-            'auth' => ['view_payroll', 'manage_bonus_allowances'],
+            'auth' => ['view_payroll', 'manage_employee_transactions'],
             'sub' => [
                 'payroll' => [
                     'default' => 'payroll',
@@ -192,14 +192,14 @@ function get_menu_config() {
                     'name' => 'Payroll',
                     'actions' => [
                         // 'add' => ['file' => 'employee_add', 'auth' => 'add_employee'],
-                        // 'show' => ['file' => 'employee_show', 'auth' => 'view_employees'],
+                        'show' => ['file' => 'payroll_show', 'auth' => 'view_payroll'],
                     ],
                 ],
-                'bonus' => [
-                    'default' => 'bonus',
-                    'auth' => 'manage_bonus_allowances',
-                    'route' => 'bonus',
-                    'name' => 'Bonus and Deductions',
+                'transactions' => [
+                    'default' => 'transactions',
+                    'auth' => 'manage_employee_transactions',
+                    'route' => 'transactions',
+                    'name' => 'Transactions',
                 ],
             ],
         ],

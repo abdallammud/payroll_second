@@ -107,5 +107,42 @@ function getDateDifference($startDate, $endDate) {
     ];
 }
 
+function getWorkdaysInMonth($yearMonth, $workdaysInWeek = 0) {
+    if($workdaysInWeek == 0) $workdaysInWeek = return_setting('working_days');
+    // Validate the input format
+    if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $yearMonth)) {
+        throw new InvalidArgumentException("Invalid date format. Use 'Y-m' (e.g., '2024-12').");
+    }
+
+    // Extract year and month
+    list($year, $month) = explode('-', $yearMonth);
+
+    // Validate the workdaysInWeek
+    if ($workdaysInWeek < 1 || $workdaysInWeek > 7) {
+        throw new InvalidArgumentException("Workdays in a week must be between 1 and 7.");
+    }
+
+    // Get the first and last days of the month
+    $firstDayOfMonth = strtotime("$year-$month-01");
+    $lastDayOfMonth = strtotime(date('Y-m-t', $firstDayOfMonth));
+
+    // Initialize variables
+    $workdays = 0;
+    $weekdays = range(1, $workdaysInWeek); // 1 = Monday, 7 = Sunday
+
+    // Loop through each day of the month
+    for ($currentDay = $firstDayOfMonth; $currentDay <= $lastDayOfMonth; $currentDay = strtotime('+1 day', $currentDay)) {
+        // Get the numeric representation of the day of the week (1 = Monday, 7 = Sunday)
+        $dayOfWeek = date('N', $currentDay);
+
+        // Check if it's a workday
+        if (in_array($dayOfWeek, $weekdays)) {
+            $workdays++;
+        }
+    }
+
+    return $workdays;
+}
+
 
 ?>

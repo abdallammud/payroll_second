@@ -4,7 +4,7 @@
 			<div class="row g-4">
 				<div class="col-lg-12 d-flex">
 					<div class="card-body">
-						<img src="assets/images/logo1.png" class="mb-4" width="145" alt="">
+						<img src="assets/images/action_logo.svg" class="mb-4" width="145" alt="">
 						<h4 class="fw-bold">Get Started Now</h4>
 						<p class="mb-0">Enter your credentials to login your account</p>
 
@@ -37,7 +37,7 @@
 								</div>
 								<div class="col-12 mt-2">
 									<div class="d-grid">
-										<button type="submit" class="btn btn-grd-primary">Login</button>
+										<button type="submit" class="btn btn-primary">Login</button>
 									</div>
 								</div>
 						

@@ -79,7 +79,7 @@ if(isset($_GET['action'])) {
 					        'added_by' 		=> $_SESSION['user_id']
 					    );
 
-					    $user_id = $userClass->create($userData);
+					    // $user_id = $userClass->create($userData);
 
 				        // Commit the transaction if everything is successful
 				        $GLOBALS['conn']->commit();
@@ -235,7 +235,7 @@ if(isset($_GET['action'])) {
 				                        'role' => 'employee',
 				                        'added_by' => $_SESSION['user_id']
 				                    ];
-				                    $userClass->create($userData);
+				                    // $userClass->create($userData);
 				                } else {
 				                    $GLOBALS['conn']->rollback();
 				                    throw new Exception("Failed to create employee at line $row.");
@@ -350,9 +350,9 @@ if(isset($_GET['action'])) {
 					    $user = $employeeClass->get_user($post['employee_id']);
 					    if($user) {
 					    	$id = $user[0]['emp_id'];
-					    	$user_id = $userClass->update($id, $userData);
+					    	// $user_id = $userClass->update($id, $userData);
 					    } else {
-					    	$user_id = $userClass->create($userData);
+					    	// $user_id = $userClass->create($userData);
 					    }
 
 				        // Commit the transaction if everything is successful
@@ -577,58 +577,6 @@ if(isset($_GET['action'])) {
 		}
 
 
-		// Delete data
-		else if($_GET['action'] == 'delete') {
-			if ($_GET['endpoint'] === 'company') {
-				try {
-				    // Delete company
-				    $deleted = $companyClass->delete($_POST['id']);
-
-				    // Company deleted
-				    if($deleted) {
-				        $result['msg'] = 'Company record has been  deleted successfully';
-				        $result['error'] = false;
-				    } else {
-				        $result['msg'] = 'Something went wrong, please try again';
-				        $result['error'] = true;
-				    }
-
-				} catch (Exception $e) {
-				    // Catch any exceptions from the create method and return an error message
-				    $result['msg'] = 'Error: Something went wrong';
-				    $result['sql_error'] = $e->getMessage(); // Get the error message from the exception
-				    $result['error'] = true;
-				}
-
-				// Return the result as a JSON response (for example in an API)
-				echo json_encode($result);
-			} else if ($_GET['endpoint'] === 'branch') {
-				try {
-				    // Delete branchClass
-				    $deleted = $branchClass->delete($_POST['id']);
-
-				    // Company deleted
-				    if($deleted) {
-				        $result['msg'] = $GLOBALS['branch_keyword']['sing'].' record has been  deleted successfully';
-				        $result['error'] = false;
-				    } else {
-				        $result['msg'] = 'Something went wrong, please try again';
-				        $result['error'] = true;
-				    }
-
-				} catch (Exception $e) {
-				    // Catch any exceptions from the create method and return an error message
-				    $result['msg'] = 'Error: Something went wrong';
-				    $result['sql_error'] = $e->getMessage(); // Get the error message from the exception
-				    $result['error'] = true;
-				}
-
-				// Return the result as a JSON response (for example in an API)
-				echo json_encode($result);
-			}
-
-			exit();
-		}
 	}
 }
 

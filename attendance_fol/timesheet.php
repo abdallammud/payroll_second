@@ -40,11 +40,7 @@
 	
 </script>
 
-<style type="text/css">
-	#statesDT td:nth-of-type(1) {
-		width: 70%;
-	}
-</style>
+
 
 <?php 
 require('timesheet_add.php');

@@ -31,7 +31,6 @@ if($user) {
         </div>
     </div>
 
-    <?php var_dump($_GET['tab']); ?>
     <hr>
     <div class="row">
     	<div class="col-lg-4 col-md-12">

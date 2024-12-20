@@ -116,6 +116,23 @@ function set_sessions($user_id) {
 	$_SESSION['branch_id'] 		= $user['branch_id'];
 	$_SESSION['user_id'] 		= $user['user_id'];
 
+	$emp_id = $user['emp_id'];
+	$avatar = 'male_avatar.png';
+	$employeeInfo = $GLOBALS['userClass']->get_emp($emp_id); 
+	if(count($employeeInfo) > 0) {
+		if(!$employeeInfo['avatar']) {
+			if(strtolower($employeeInfo['gender']) == 'female')  {
+				$employeeInfo['avatar'] = 'female_avatar.png';
+			} else {
+				$employeeInfo['avatar'] = 'male_avatar.png';
+			}
+		}
+
+		$avatar = $employeeInfo['avatar'];
+	}
+
+	$_SESSION['avatar'] = $avatar;
+
 	$sysPermissions = $GLOBALS['permissionsClass']->read_all();
 	$userPermissions = $GLOBALS['userClass']->getPermissions($user_id);
 

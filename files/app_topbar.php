@@ -42,36 +42,29 @@
 			
 			<li class="nav-item dropdown">
 				<a href="javascrpt:;" class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown">
-					<img src="<?=baseUri();?>/assets/images/avatars/01.png" class="rounded-circle p-1 border" width="45" height="45" alt="">
+					<img src="<?=baseUri();?>/assets/images/avatars/<?=$_SESSION['avatar'];?>" class="rounded-circle p-1 border" width="45" height="45" alt="">
 				</a>
 				<div class="dropdown-menu dropdown-user dropdown-menu-end shadow">
 				<a class="dropdown-item  gap-2 py-2" href="javascript:;">
 					<div class="text-center">
-						<img src="<?=baseUri();?>/assets/images/avatars/01.png" class="rounded-circle p-1 shadow mb-3" width="90" height="90" alt="">
+						<img src="<?=baseUri();?>/assets/images/avatars/<?=$_SESSION['avatar'];?>" class="rounded-circle p-1 shadow mb-3" width="90" height="90" alt="">
 						<h5 class="user-name mb-0 fw-bold"><?=$_SESSION['full_name'];?></h5>
 					</div>
 				</a>
 				<hr class="dropdown-divider">
-				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;">
+				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="<?=baseUri();?>/employees/show/<?=$_SESSION['emp_id'];?>">
 					<i class="material-icons-outlined">person_outline</i>
 					Profile
 				</a>
-				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;">
+				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="<?=baseUri();?>/settings/">
 					<i class="material-icons-outlined">local_bar</i>
 					Setting
 				</a>
-				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;">
+				<a class="dropdown-item d-flex align-items-center gap-2 py-2"  href="<?=baseUri();?>/dashboard/">
 					<i class="material-icons-outlined">dashboard</i>
 					Dashboard
 				</a>
-				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;">
-					<i class="material-icons-outlined">account_balance</i>
-					Earning
-				</a>
-				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;">
-					<i class="material-icons-outlined">cloud_download</i>
-					Downloads
-				</a>
+				
 				<hr class="dropdown-divider">
 				<a class="dropdown-item d-flex align-items-center gap-2 py-2" href="<?=baseUri();?>/logout">
 					<i class="material-icons-outlined">power_settings_new</i>

@@ -4,7 +4,7 @@
         <h5 class="">System Users</h5>
         <div class="ms-auto d-sm-flex">
             <div class="btn-group smr-10">
-                <a href="<?=baseUri();?>/users/add"  class="btn btn-primary">Add User</a>
+                <a href="<?=baseUri();?>/user/add"  class="btn btn-primary">Add User</a>
             </div>
         </div>
     </div>

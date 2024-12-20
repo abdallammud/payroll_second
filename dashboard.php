@@ -11,68 +11,35 @@
             </ol>
           </nav>
         </div>
-        <div class="ms-auto">
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary">Settings</button>
-            <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split"
-              data-bs-toggle="dropdown"> <span class="visually-hidden">Toggle Dropdown</span>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end"> <a class="dropdown-item"
-                href="javascript:;">Action</a>
-              <a class="dropdown-item" href="javascript:;">Another action</a>
-              <a class="dropdown-item" href="javascript:;">Something else here</a>
-              <div class="dropdown-divider"></div><a class="dropdown-item" href="javascript:;">Separated link</a>
-            </div>
-          </div>
-        </div>
+        
       </div>
       <!--end breadcrumb-->
 
 
       <div class="row">
-        <div class="col-12 col-lg-4 col-xxl-4 d-flex">
-          <div class="card rounded-4 w-100">
-            <div class="card-body">
-              <div class="">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                  <h5 class="mb-0">Congratulations <span class="fw-600">Jhon</span></h5>
-                  <img src="assets/images/apps/party-popper.png" width="24" height="24" alt="">
-                </div>
-                <p class="mb-4">You are the best seller of this monnth</p>
-                <div class="d-flex align-items-center justify-content-between">
-                  <div class="">
-                    <h3 class="mb-0 text-indigo">$168.5K</h3>
-                    <p class="mb-3">58% of sales target</p>
-                    <button class="btn btn-grd btn-grd-primary rounded-5 border-0 px-4">View Details</button>
-                  </div>
-                  <img src="assets/images/apps/gift-box-3.png" width="100" alt="">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-lg-4 col-xxl-2 d-flex">
+        
+        <div class="col-12 col-lg-3 col-xxl-3 d-flex">
           <div class="card rounded-4 w-100">
             <div class="card-body">
               <div class="mb-3 d-flex align-items-center justify-content-between">
                 <div
                   class="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                  <span class="material-icons-outlined fs-5">shopping_cart</span>
+                  <span class="material-icons-outlined fs-5">account_balance_wallet</span>
                 </div>
                 <div>
-                  <span class="text-success d-flex align-items-center">+24%<i
-                      class="material-icons-outlined">expand_less</i></span>
+                  <!-- <span class="text-success d-flex align-items-center">+24%<i
+                      class="material-icons-outlined">expand_less</i></span> -->
                 </div>
               </div>
               <div>
-                <h4 class="mb-0">248k</h4>
-                <p class="mb-3">Total Orders</p>
+                <h4 class="mb-0">$154,252,152</h4>
+                <p class="mb-3">Company Balance</p>
                 <div id="chart1"></div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-12 col-lg-4 col-xxl-2 d-flex">
+        <div class="col-12 col-lg-3 col-xxl-3 d-flex">
           <div class="card rounded-4 w-100">
             <div class="card-body">
               <div class="mb-3 d-flex align-items-center justify-content-between">
@@ -93,7 +60,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-lg-6 col-xxl-2 d-flex">
+        <div class="col-12 col-lg-3 col-xxl-3 d-flex">
           <div class="card rounded-4 w-100">
             <div class="card-body">
               <div class="mb-3 d-flex align-items-center justify-content-between">
@@ -114,7 +81,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-lg-6 col-xxl-2 d-flex">
+        <div class="col-12 col-lg-3 col-xxl-3 d-flex">
           <div class="card rounded-4 w-100">
             <div class="card-body">
               <div class="mb-3 d-flex align-items-center justify-content-between">

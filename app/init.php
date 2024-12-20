@@ -20,6 +20,7 @@ require('BanksClass.php');
 require('MiscClass.php');
 require('SettingsClass.php');
 require('AttendanceClass.php');
+require('PayrollClass.php');
 // require('UserClass.php');
 
 
